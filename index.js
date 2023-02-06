@@ -1,5 +1,3 @@
-// GIVEN a command-line application that accepts user input
-
 // WHEN I choose to view all departments
 // THEN I am presented with a formatted table showing department names and department ids
 // WHEN I choose to view all roles
