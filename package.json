@@ -1,0 +1,26 @@
+{
+  "name": "module12challenge-sql-employeetracker",
+  "version": "1.0.0",
+  "description": "Module 12 Challenge, UCF Full-Stack Coding bootcamp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hfrancis7/Module12Challenge-SQL-EmployeeTracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hfrancis7/Module12Challenge-SQL-EmployeeTracker/issues"
+  },
+  "homepage": "https://github.com/hfrancis7/Module12Challenge-SQL-EmployeeTracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "express": "^4.18.2",
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.1.0"
+  }
+}
