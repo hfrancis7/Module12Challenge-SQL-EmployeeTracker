@@ -25,6 +25,8 @@ CREATE TABLE `role` (
     ON UPDATE NO ACTION);
 
 -- Took from mySQL workbench generating table due to errors
+-- Cannot have foreign key ID set to "NOT NULL" with Delete action "SET NULL" --
+-- Unsure if need to change "ON UPDATE" action yet --
 CREATE TABLE employee (
   id INT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(30) NOT NULL,
