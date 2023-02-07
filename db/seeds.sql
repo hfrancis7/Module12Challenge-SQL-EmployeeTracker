@@ -1,11 +1,11 @@
-INSERT INTO department (id, dep_name)
+INSERT INTO department (id, `name`)
 VALUES (001, "Security"),
        (002, "Marketing"),
        (003, "Business"),
        (004, "Production"),
        (005, "Quality Assurance");
 
-INSERT INTO role (id, title, salary, dep_id)
+INSERT INTO role (id, title, salary, department_id)
 VALUES (100, "Day Shift Guard", 35000.0, 001),
        (101, "Night Shift Guard", 36000.0, 001),
        (102, "Business Manager", 50000.0, 002),
@@ -47,7 +47,10 @@ VALUES (1000, "Dimitri", "Alexander", 100, NULL),
        (1024, "Harry", "Skittles", 110, 1023),
        (1025, "Lola", "Maxwell", 110, 1023),
        (1026, "Zoe", "Patel", 111, 1023),
-       (1027, "Kacey", "Pipers", 111, 1023);
+       (1027, "Kacey", "Pipers", 111, 1023),
+       (1028, "Jamie", "Taylor", 111, 1023),
+       (1029, "Ingrid", "Salihovic", 111, 1023),
+       (1030, "Nina", "Tummerman", 111, 1023);
 
        
        
