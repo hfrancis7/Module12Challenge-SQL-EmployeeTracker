@@ -9,22 +9,9 @@ const connection = mysql.createConnection({
     password: 'password17',
 });
 
-// WHEN I choose to add a department
-// THEN I am prompted to enter the name of the department and that department is added to the database
-// WHEN I choose to add a role
-// THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
-// WHEN I choose to add an employee
-// THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
-// WHEN I choose to update an employee role
-// THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
-
 const inquirer = require("inquirer");
 
 function init(){
-   
-      // Example from documentation for reference
-  // simple query
-
     mainMenu();
 }
 
@@ -37,7 +24,7 @@ function mainMenu(){
             type: "list",
             name: "mainMenu_choice",
             message: "What would you like to do?",
-            choices: ["View All Departments", "View All Roles", "View All Employees", "Add a Department", "Add a Role", "Add an Employee", "Update an Employee Roll", "Exit"]
+            choices: ["View All Departments", "View All Roles", "View All Employees", "Add a Department", "Add a Role", "Add an Employee", "Update an Employee Role", "Exit"]
 
         }
     ]).then((data => {
@@ -45,10 +32,10 @@ function mainMenu(){
             case "View All Departments": viewDepartments(); break;
             case "View All Roles": viewRoles(); break;
             case "View All Employees": viewEmployees(); break;
-            case "Add a Department": addDepartment("Coding Test"); break;
+            case "Add a Department": addDepartment(); break;
             case "Add a Role": mainMenu(); break;
             case "Add an Employee": mainMenu(); break;
-            case "Update an Employee": mainMenu(); break;
+            case "Update an Employee Role": mainMenu(); break;
             case "Exit": console.log("\nTerminating program. Thank you!\n"); process.exit(0);
             default: "INTERNAL ERROR: Choice invalid. (" + data.mainMenu_choice + ")"; process.exit(1);
         }
@@ -63,7 +50,7 @@ function viewDepartments(){
          function(err, results) {
             if(!err){
                 const table = cTable.getTable(results);
-                console.log("\n\n" + table);
+                console.log("\n" + table);
                 mainMenu();
             }else{
                 console.log(err);
@@ -81,7 +68,7 @@ function viewRoles(){
         function(err, results) {
             if(!err){
                 const table = cTable.getTable(results);
-                console.log("\n\n" + table);
+                console.log("\n" + table);
                 mainMenu();
             }else{
                 console.log(err);
@@ -99,7 +86,7 @@ function viewEmployees(){
         function(err, results) {
             if(!err){
                 const table = cTable.getTable(results);
-                console.log("\n\n" + table);
+                console.log("\n" + table);
                 mainMenu();
             }else{
                 console.log(err);
@@ -109,23 +96,51 @@ function viewEmployees(){
     );
 }
 
-function addDepartment(name){
-    connection.query(
-        'INSERT INTO department (name) VALUES (?);',
-        [name],
-        function(err, results) {
-            if(!err){
-                console.log("\nSuccess! \"" + name + "\" department has been added with an id of " + results.insertId + ".\n");
-                mainMenu();
-            }else{
-                console.log(err);
-                process.exit(1);
-            }
-            
+// WHEN I choose to add a department
+// THEN I am prompted to enter the name of the department and that department is added to the database
+function addDepartment(){
+    inquirer
+    .prompt([
+        {
+            type: "input",
+            name: "departmentName",
+            message: "What is the name of the department?",
+            validate: (value) => {if(value){return true}else{return "Please enter a response."}}
+
         }
-    );
+    ]).then((data => {
+        connection.query(
+            'INSERT INTO department (name) VALUES (?);',
+            [data.departmentName],
+            function(err, results) {
+                if(!err){
+                    console.log("\nSuccess! \"" + data.departmentName + "\" department has been added with an id of " + results.insertId + ".\n");
+                    mainMenu();
+                }else{
+                    console.log(err);
+                    process.exit(1);
+                }
+            }
+        );
+    }))
 }
 
+// WHEN I choose to add a role
+// THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
+function addRole(){
 
+}
+
+// WHEN I choose to add an employee
+// THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
+function addEmployee(){
+
+}
+
+// WHEN I choose to update an employee role
+// THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
+function updateEmployeeRole(){
+
+}
 
 init();
