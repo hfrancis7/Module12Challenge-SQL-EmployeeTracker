@@ -1,5 +1,13 @@
 // get the client
 const mysql = require('mysql2');
+const cTable = require('console.table');
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    database: 'employees_db',
+    password: 'password17',
+});
 
 
 
@@ -14,12 +22,7 @@ const mysql = require('mysql2');
 //     }
 //   );
 
-// WHEN I choose to view all departments
-// THEN I am presented with a formatted table showing department names and department ids
-// WHEN I choose to view all roles
-// THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
-// WHEN I choose to view all employees
-// THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
+
 // WHEN I choose to add a department
 // THEN I am prompted to enter the name of the department and that department is added to the database
 // WHEN I choose to add a role
@@ -32,22 +35,10 @@ const mysql = require('mysql2');
 const inquirer = require("inquirer");
 
 function init(){
-    const connection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'employees_db',
-        password: 'password17',
-      });
+   
       // Example from documentation for reference
   // simple query
-connection.query(
-    'SELECT * from department',
-    function(err, results, fields) {
-      console.log(results); // results contains rows returned by server
-      console.log(fields); // fields contains extra meta data about results, if available
-      console.log(err);
-    }
-  );
+
     mainMenu();
 }
 
@@ -60,22 +51,66 @@ function mainMenu(){
             type: "list",
             name: "mainMenu_choice",
             message: "What would you like to do?",
-            choices: ["View All Departments", "View All Rolls", "View All Employees", "Add a Department", "Add a Role", "Add an Employee", "Update an Employee Roll", "Exit"]
+            choices: ["View All Departments", "View All Roles", "View All Employees", "Add a Department", "Add a Role", "Add an Employee", "Update an Employee Roll", "Exit"]
 
         }
     ]).then((data => {
-        switch(data.mainMenu_choice){
-            case "View All Departments": mainMenu(); break;
-            case "View All Rolls": mainMenu(); break;
-            case "View All Employees": mainMenu(); break;
+        switch(data.mainMenu_choice){ //breaks likely uneccesary due to recursion of the mainMenu function in the other functions
+            case "View All Departments": viewDepartments(); break;
+            case "View All Roles": viewRoles(); break;
+            case "View All Employees": viewEmployees(); break;
             case "Add a Department": mainMenu(); break;
             case "Add a Role": mainMenu(); break;
             case "Add an Employee": mainMenu(); break;
             case "Update an Employee": mainMenu(); break;
-            case "Exit": console.log("\nTerminating program. Thank you!\n"); break;
+            case "Exit": console.log("\nTerminating program. Thank you!\n"); process.exit(0);
             default: "INTERNAL ERROR: Choice invalid. (" + data.mainMenu_choice + ")"; break;
         }
     }))
 }
+
+// WHEN I choose to view all departments
+// THEN I am presented with a formatted table showing department names and department ids
+function viewDepartments(){
+    connection.query(
+         'SELECT * from department',
+         function(err, results, fields) {
+             //console.log(results);
+             const table = cTable.getTable(results);
+             console.log("\n\n" + table);
+             mainMenu();
+         }
+     );
+} 
+
+// WHEN I choose to view all roles
+// THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
+function viewRoles(){
+   connection.query(
+        'SELECT * from role',
+        function(err, results) {
+            //console.log(results);
+            const table = cTable.getTable(results);
+            console.log("\n\n" + table);
+            mainMenu();
+        }
+    );
+}
+
+// WHEN I choose to view all employees
+// THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
+function viewEmployees(){
+    connection.query(
+        'SELECT * from employee',
+        function(err, results) {
+            //console.log(results);
+            const table = cTable.getTable(results);
+            console.log("\n\n" + table);
+            mainMenu();
+        }
+    );
+}
+
+
 
 init();
