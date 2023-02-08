@@ -9,20 +9,6 @@ const connection = mysql.createConnection({
     password: 'password17',
 });
 
-
-
-
-  
-//   // with placeholder
-//   connection.query(
-//     'SELECT * FROM `table` WHERE `name` = ? AND `age` > ?',
-//     ['Page', 45],
-//     function(err, results) {
-//       console.log(results);
-//     }
-//   );
-
-
 // WHEN I choose to add a department
 // THEN I am prompted to enter the name of the department and that department is added to the database
 // WHEN I choose to add a role
@@ -59,12 +45,12 @@ function mainMenu(){
             case "View All Departments": viewDepartments(); break;
             case "View All Roles": viewRoles(); break;
             case "View All Employees": viewEmployees(); break;
-            case "Add a Department": mainMenu(); break;
+            case "Add a Department": addDepartment("Coding Test"); break;
             case "Add a Role": mainMenu(); break;
             case "Add an Employee": mainMenu(); break;
             case "Update an Employee": mainMenu(); break;
             case "Exit": console.log("\nTerminating program. Thank you!\n"); process.exit(0);
-            default: "INTERNAL ERROR: Choice invalid. (" + data.mainMenu_choice + ")"; break;
+            default: "INTERNAL ERROR: Choice invalid. (" + data.mainMenu_choice + ")"; process.exit(1);
         }
     }))
 }
@@ -74,11 +60,15 @@ function mainMenu(){
 function viewDepartments(){
     connection.query(
          'SELECT * from department',
-         function(err, results, fields) {
-             //console.log(results);
-             const table = cTable.getTable(results);
-             console.log("\n\n" + table);
-             mainMenu();
+         function(err, results) {
+            if(!err){
+                const table = cTable.getTable(results);
+                console.log("\n\n" + table);
+                mainMenu();
+            }else{
+                console.log(err);
+                process.exit(1);
+            }
          }
      );
 } 
@@ -89,10 +79,14 @@ function viewRoles(){
    connection.query(
         'SELECT * from role',
         function(err, results) {
-            //console.log(results);
-            const table = cTable.getTable(results);
-            console.log("\n\n" + table);
-            mainMenu();
+            if(!err){
+                const table = cTable.getTable(results);
+                console.log("\n\n" + table);
+                mainMenu();
+            }else{
+                console.log(err);
+                process.exit(1);
+            }
         }
     );
 }
@@ -103,10 +97,31 @@ function viewEmployees(){
     connection.query(
         'SELECT * from employee',
         function(err, results) {
-            //console.log(results);
-            const table = cTable.getTable(results);
-            console.log("\n\n" + table);
-            mainMenu();
+            if(!err){
+                const table = cTable.getTable(results);
+                console.log("\n\n" + table);
+                mainMenu();
+            }else{
+                console.log(err);
+                process.exit(1);
+            }
+        }
+    );
+}
+
+function addDepartment(name){
+    connection.query(
+        'INSERT INTO department (name) VALUES (?);',
+        [name],
+        function(err, results) {
+            if(!err){
+                console.log("\nSuccess! \"" + name + "\" department has been added with an id of " + results.insertId + ".\n");
+                mainMenu();
+            }else{
+                console.log(err);
+                process.exit(1);
+            }
+            
         }
     );
 }
