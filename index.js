@@ -33,7 +33,7 @@ function mainMenu(){
             case "View All Roles": viewRoles(); break;
             case "View All Employees": viewEmployees(); break;
             case "Add a Department": addDepartment(); break;
-            case "Add a Role": mainMenu(); break;
+            case "Add a Role": addRole(); break;
             case "Add an Employee": mainMenu(); break;
             case "Update an Employee Role": mainMenu(); break;
             case "Exit": console.log("\nTerminating program. Thank you!\n"); process.exit(0);
@@ -128,6 +128,47 @@ function addDepartment(){
 // WHEN I choose to add a role
 // THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
 function addRole(){
+    connection.promise().query('SELECT * FROM department')
+    .then(([rows, fields]) => { //fields unused, was in documentation
+        inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "roleName",
+                message: "What is the name of this role?",
+                validate: (value) => {if(value){return true}else{return "Please enter a response."}}
+            },
+            {
+                type: "input",
+                name: "roleSalary",
+                message: "What is the salary of this role?",
+                validate: (value) => {if(!(isNaN(parseFloat(value)))){return true}else{return "Please enter a valid numeric decimal value."}}
+    
+            },
+            {
+                type: "list",
+                name: "departmentId",
+                message: "What is the department ID for this role?",
+                choices: rows
+            }
+        ]).then((data => {
+            connection.query(
+                'INSERT INTO role (name, salary, department_id) VALUES (?, ?, ?);',
+                [data.roleName, data.roleSalary, data.departmentId],
+                function(err, results) {
+                    if(!err){
+                        console.log("\nSuccess! \"" + data.departmentName + "\" department has been added with an id of " + results.insertId + ".\n");
+                        mainMenu();
+                    }else{
+                        console.log(err);
+                        process.exit(1);
+                    }
+                }
+            );
+        }))
+    }).catch(console.log)
+  
+    
 
 }
 
