@@ -25,7 +25,7 @@ function mainMenu(){
             type: "list",
             name: "mainMenu_choice",
             message: "What would you like to do?",
-            choices: ["View All Departments", "View All Roles", "View All Employees", "Add a Department", "Add a Role", "Add an Employee", "Update an Employee Role", "Update Employee Manager", "Exit"]
+            choices: ["View All Departments", "View All Roles", "View All Employees", "Add a Department", "Add a Role", "Add an Employee", "Update an Employee Role", "Update Employee Manager", "View Employees by Manager", "Exit"]
 
         }
     ]).then((data => {
@@ -38,6 +38,7 @@ function mainMenu(){
             case "Add an Employee": addEmployee(); break;
             case "Update an Employee Role": updateEmployeeRole(); break;
             case "Update Employee Manager": updateEmployeeManager(); break;
+            case "View Employees by Manager": viewEmployeesByManager(); break;
             case "Exit": console.log("\nTerminating program. Thank you!\n"); process.exit(0);
             default: "INTERNAL ERROR: Choice invalid. (" + data.mainMenu_choice + ")"; process.exit(1);
         }
@@ -316,9 +317,6 @@ function updateEmployeeRole(){
                         }
                     );
                 })
-                
-
-
             })
         })
     })
@@ -384,7 +382,56 @@ function updateEmployeeManager(){
     })
 } // end updateEmployeeManager()
 
-//view employees by department
+//view employees by manager
+function viewEmployeesByManager(){
+    connection.query(
+        'SELECT * from employee',
+        function(err, results) {
+            if(!err){
+                const empRows = []; //for inquierer
+                const empData = results; //used for comparing first/last name and getting id without new query
+                for(let i = 0; i < results.length; i++){ //populate empRows, tried using forEach but syntax wasn't agreeing with me
+                    let employee = results[i].first_name + " " + results[i].last_name;
+                    empRows.push(employee);
+                }
+                inquirer
+                .prompt([
+                    {
+                        type: "list",
+                        name: "manager",
+                        message: "Which employee would you like to see who manages?",
+                        choices: empRows
+                    },
+                ]).then((data) => {
+                    let manager_id;
+                    const nameSplit = (data.manager).split(" ");
+                    //inefficient search but I'm short on time and exhausted
+                    for(let i = 0; i < empData.length; i++){
+                        if((nameSplit[0] == empData[i].first_name) && (nameSplit[1] == empData[i].last_name)){
+                            manager_id = empData[i].id;
+                        }
+                    }
+                    console.log("in then")
+                    connection.query('SELECT * from employee WHERE manager_id = ?', 
+                    [manager_id],
+                    function(err, results){
+        
+                        if(!err){
+                            const table = cTable.getTable(results);
+                            console.log("\n" + table);
+                            mainMenu();
+                        }else{
+                            console.log(err);
+                            process.exit(1);
+                        }
+                    })
+                })
+            }else{
+                console.log(err);
+                process.exit(1);
+            }
+        })
+}
 
 //delete department
 
