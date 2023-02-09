@@ -433,11 +433,4 @@ function viewEmployeesByManager(){
         })
 }
 
-//delete department
-
-//delete roles
-
-//delete employees
-
-//compined salaries of all employees in a department
 init();
