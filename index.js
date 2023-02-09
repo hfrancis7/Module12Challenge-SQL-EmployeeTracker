@@ -25,7 +25,7 @@ function mainMenu(){
             type: "list",
             name: "mainMenu_choice",
             message: "What would you like to do?",
-            choices: ["View All Departments", "View All Roles", "View All Employees", "Add a Department", "Add a Role", "Add an Employee", "Update an Employee Role", "Exit"]
+            choices: ["View All Departments", "View All Roles", "View All Employees", "Add a Department", "Add a Role", "Add an Employee", "Update an Employee Role", "Update Employee Manager", "Exit"]
 
         }
     ]).then((data => {
@@ -37,6 +37,7 @@ function mainMenu(){
             case "Add a Role": addRole(); break;
             case "Add an Employee": addEmployee(); break;
             case "Update an Employee Role": updateEmployeeRole(); break;
+            case "Update Employee Manager": updateEmployeeManager(); break;
             case "Exit": console.log("\nTerminating program. Thank you!\n"); process.exit(0);
             default: "INTERNAL ERROR: Choice invalid. (" + data.mainMenu_choice + ")"; process.exit(1);
         }
@@ -323,4 +324,73 @@ function updateEmployeeRole(){
     })
 } //updateEmployeeRole
 
+//BONUS
+
+//update Employee managers
+function updateEmployeeManager(){
+    connection.promise().query("SELECT * FROM employee")
+    .then(([rows]) => {
+        const empRows = []; //for inquierer
+        const empData = rows; //used for comparing first/last name and getting id without new query
+        for(let i = 0; i < rows.length; i++){ //populate empRows, tried using forEach but syntax wasn't agreeing with me
+            let employee = rows[i].first_name + " " + rows[i].last_name;
+            empRows.push(employee);
+        }
+        inquirer
+        .prompt([
+            {
+                type: "list",
+                name: "employee_toUpdate",
+                message: "Which employee would you like to update?",
+                choices: empRows
+            },
+            {
+                type: "list",
+                name: "newManager",
+                message: "Which employee are you assigning as their manager?",
+                choices: ["None", ...empRows]
+            }
+        ]).then((data) => {
+            let employee_id;
+            let manager_id;
+            if(data.newManager != "None"){
+                const nameSplit = (data.newManager).split(" ");
+                //inefficient search but I'm short on time and exhausted
+                for(let i = 0; i < empData.length; i++){
+                    if((nameSplit[0] == empData[i].first_name) && (nameSplit[1] == empData[i].last_name)){
+                        manager_id = empData[i].id;
+                    }
+                }
+            }
+            const nameSplit = (data.employee_toUpdate).split(" ");
+            //inefficient search but I'm short on time and exhausted
+            for(let i = 0; i < empData.length; i++){
+                if((nameSplit[0] == empData[i].first_name) && (nameSplit[1] == empData[i].last_name)){
+                    employee_id = empData[i].id;
+                }
+            }
+            connection.query('UPDATE employee SET manager_id = ? WHERE id = ?',
+            [manager_id, employee_id],
+            function(err, results) {
+                if(!err){
+                    console.log("\nSuccess! The manager of \"" + data.employee_toUpdate + "\" has updated to " + data.newManager + ".\n");
+                    mainMenu();
+                }else{
+                    console.log(err);
+                    process.exit(1);
+                }
+            })
+        })
+    })
+} // end updateEmployeeManager()
+
+//view employees by department
+
+//delete department
+
+//delete roles
+
+//delete employees
+
+//compined salaries of all employees in a department
 init();
