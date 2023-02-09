@@ -135,7 +135,7 @@ function addRole(){
             {
                 type: "input",
                 name: "roleName",
-                message: "What is the name of this role?",
+                message: "What is the job title of this role?",
                 validate: (value) => {if(value){return true}else{return "Please enter a response."}}
             },
             {
@@ -147,29 +147,29 @@ function addRole(){
             },
             {
                 type: "list",
-                name: "departmentId",
-                message: "What is the department ID for this role?",
+                name: "departmentName",
+                message: "Which department is this new role part of?",
                 choices: rows
             }
         ]).then((data => {
-            connection.query(
-                'INSERT INTO role (name, salary, department_id) VALUES (?, ?, ?);',
-                [data.roleName, data.roleSalary, data.departmentId],
-                function(err, results) {
-                    if(!err){
-                        console.log("\nSuccess! \"" + data.departmentName + "\" department has been added with an id of " + results.insertId + ".\n");
-                        mainMenu();
-                    }else{
-                        console.log(err);
-                        process.exit(1);
+            connection.promise().query("SELECT id FROM department WHERE name = ?", [data.departmentName])
+            .then(([rows, fields]) => {
+                connection.query(
+                    'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?);',
+                    [data.roleName, data.roleSalary, rows[0].id],
+                    function(err, results) {
+                        if(!err){
+                            console.log("\nSuccess! \"" + data.departmentName + "\" department has been added with an id of " + results.insertId + ".\n");
+                            mainMenu();
+                        }else{
+                            console.log(err);
+                            process.exit(1);
+                        }
                     }
-                }
-            );
+                );
+            })
         }))
     }).catch(console.log)
-  
-    
-
 }
 
 // WHEN I choose to add an employee
