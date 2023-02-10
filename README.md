@@ -26,7 +26,7 @@
   
   - Clone this repo to your local machine.
   - Run "npm init -y" to ensure you have the node_modules file in the root directory of the cloned repo.
-  - Make sure you have the mySQL2 package, the inquirer@8.2.4 package, and the console.table package listed 
+  - Make sure you have the mySQL2 package, the inquirer@8.2.4 package, and the console.table package
   
   ## Usage
   
@@ -42,7 +42,7 @@
 
   ## Demo
   
-  Link TBA
+  https://clipchamp.com/watch/BxgvqPqhiCh
 
   ## Database Schema
 
