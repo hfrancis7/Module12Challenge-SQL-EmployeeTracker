@@ -19,6 +19,7 @@
   - [License](#license)
   - [Demo](#demo)
   - [Database Schema](#database-schema)
+  - [Notes for Improvement](#notes-for-improvement)
   - [Questions](#questions)
   
   ## Installation
@@ -85,5 +86,5 @@
 
 If you have any questions about this project, here's how to contact me:
 
-Github: https://github.com/hfrancis7
+Github: https://github.com/hfrancis7 <br>
 Email: hfran7@yahoo.com
